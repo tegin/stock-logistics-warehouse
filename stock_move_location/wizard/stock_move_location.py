@@ -275,6 +275,7 @@ class StockMoveLocationWizard(models.TransientModel):
                 lines.append(line)
             self.update({'stock_move_location_line_ids': [
                 (6, 0, [line.id for line in lines])]})
+        self.stock_move_location_line_ids._onchange_product()
 
     def clear_lines(self):
         self._clear_lines()

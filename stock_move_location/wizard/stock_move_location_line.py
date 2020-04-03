@@ -19,6 +19,7 @@ class StockMoveLocationWizardLine(models.TransientModel):
         column2='move_location_wiz_id',
         readonly=True,
     )
+
     product_id = fields.Many2one(
         string="Product",
         comodel_name="product.product",
@@ -72,6 +73,11 @@ class StockMoveLocationWizardLine(models.TransientModel):
                 raise ValidationError(_(
                     "Move quantity can not exceed max quantity or be negative"
                 ))
+
+    @api.onchange('product_id', 'lot_id')
+    def _onchange_product(self):
+        for record in self:
+            record.max_quantity = record.get_max_quantity()
 
     def get_max_quantity(self):
         self.product_uom_id = self.product_id.uom_id
