@@ -39,12 +39,10 @@ class StockMoveLocationWizard(models.TransientModel):
         required=True,
         domain=lambda self: self._get_locations_domain(),
     )
-    stock_move_location_line_ids = fields.Many2many(
+    stock_move_location_line_ids = fields.One2many(
         string="Move Location lines",
         comodel_name="wiz.stock.move.location.line",
-        column1="move_location_wiz_id",
-        column2="move_location_line_wiz_id",
-
+        inverse_name="move_location_wizard_id",
     )
     picking_type_id = fields.Many2one(
         comodel_name='stock.picking.type',
@@ -242,6 +240,7 @@ class StockMoveLocationWizard(models.TransientModel):
                 lines.append(line)
             self.update({'stock_move_location_line_ids': [
                 (6, 0, [line.id for line in lines])]})
+        self.stock_move_location_line_ids._onchange_product()
 
     def clear_lines(self):
         self._clear_lines()
