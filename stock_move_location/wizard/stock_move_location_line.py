@@ -73,6 +73,11 @@ class StockMoveLocationWizardLine(models.TransientModel):
                     "Move quantity can not exceed max quantity or be negative"
                 ))
 
+    @api.onchange('product_id', 'lot_id')
+    def _onchange_product(self):
+        for record in self:
+            record.max_quantity = record.get_max_quantity()
+
     def get_max_quantity(self):
         self.product_uom_id = self.product_id.uom_id
         search_args = [
